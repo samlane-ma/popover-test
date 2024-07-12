@@ -1,0 +1,9 @@
+[Plugin]
+Loader=python3
+Module=budgie-test
+Name=Test
+Description=Test Applet
+Authors=
+Copyright=
+Website=
+Icon=mail-unread-symbolic
