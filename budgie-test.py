@@ -8,6 +8,7 @@ if Libxfce4windowing.windowing_get() == Libxfce4windowing.Windowing.WAYLAND:
     gi.require_version('Budgie', '2.0')
 else:
     gi.require_version('Budgie', '1.0')
+
 from gi.repository import Budgie, GObject, Gtk
 
 class TestApplet(GObject.GObject, Budgie.Plugin):
@@ -25,14 +26,16 @@ class TestAppletApplet(Budgie.Applet):
     def __init__(self, uuid):
         Budgie.Applet.__init__(self)
         self.uuid = uuid
-        self.icon = Gtk.Image.new_from_icon_name("mail-unread-symbolic", 32)
-        self.add(self.icon)
-        self.popover = Budgie.Popover.new(self)
+        self.icon = Gtk.Image.new_from_icon_name("mail-unread-symbolic", Gtk.IconSize.MENU)
+        self.box = Gtk.EventBox()
+        self.box.add(self.icon)
+        self.add(self.box)
+        self.popover = Budgie.Popover.new(self.box)
         self.popover_label = Gtk.Label(label="Popover")
         self.popover.add(self.popover_label)
         self.popover.get_child().show_all()
         self.show_all()
-        self.connect("button-press-event", self.on_press)
+        self.box.connect("button-press-event", self.on_press)
 
     def do_supports_settings(self):
         """Return True if support setting through Budgie Setting,
@@ -41,8 +44,8 @@ class TestAppletApplet(Budgie.Applet):
         return False
 
     def on_press(self, box, arg):
-        self.manager.show_popover(self)
+        self.manager.show_popover(self.box)
 
     def do_update_popovers(self, manager):
         self.manager = manager
-        self.manager.register_popover(self, self.popover)
+        self.manager.register_popover(self.box, self.popover)
